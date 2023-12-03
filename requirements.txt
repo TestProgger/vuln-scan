@@ -1,0 +1,22 @@
+# Django
+# ------------------------------------------------------------------------------
+Django==4.2.7 # https://www.djangoproject.com/
+django-environ==0.11.2 # https://github.com/joke2k/django-environ
+
+# Django REST Framework
+# ------------------------------------------------------------------------------
+django-cors-headers==4.2.0 # https://github.com/adamchainz/django-cors-headers
+drf-spectacular==0.26.5 # https://github.com/tfranzel/drf-spectacular
+
+# Django DB Framework
+# ------------------------------------------------------------------------------
+psycopg==3.1.12 # https://www.psycopg.org/psycopg3/docs/
+psycopg-binary==3.1.12 # https://www.psycopg.org/psycopg3/docs/
+rest-framework-simplejwt==0.0.2 # https://github.com/jazzband/djangorestframework-simplejwt
+djangorestframework-simplejwt[crypto]
+
+# Celery
+# ------------------------------------------------------------------------------
+celery==5.3.6
+django-celery-beat==2.5.0 # https://github.com/celery/django-celery-beat
+django-celery-results==2.5.1 # https://github.com/celery/django-celery-results
