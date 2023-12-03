@@ -27,7 +27,8 @@ DJANGO_APPS = [
 ]
 
 PROJECT_APPS = [
-
+    "project.scenarios",
+    "project.processes"
 ]
 
 THIRD_PARTY_APPS = [
@@ -81,8 +82,6 @@ else:
             'NAME': BASE_DIR / 'mdm_db.sqlite3',
         }
     }
-
-# DATABASE_ROUTERS = ['routers.db_router.DataMartRouter', 'routers.db_router.DefaultAppRouter']
 
 AUTH_PASSWORD_VALIDATORS = [
     {

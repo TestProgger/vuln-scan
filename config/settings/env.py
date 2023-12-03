@@ -5,7 +5,8 @@ import environ
 env = environ.Env()
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
-print(BASE_DIR)
+APPS_DIR = BASE_DIR / 'project'
+
 if os.getenv('READ_ENV_LOCAL'):
     if os.path.exists(os.path.join(BASE_DIR, '.env.local')):
         environ.Env.read_env(os.path.join(BASE_DIR, '.env.local'))
