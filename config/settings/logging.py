@@ -1,3 +1,5 @@
+import logging
+
 from config.settings.env import env
 import os
 
@@ -20,13 +22,13 @@ LOGGING = {
             "datefmt": "%Y-%m-%d %H:%M:%S"
         }
     },
-    "handlers": {
+    "workers": {
         "console": {
             "class": "logging.StreamHandler",
             "formatter": "default",
         },
         "file": {
-            "class": "logging.handlers.RotatingFileHandler",
+            "class": "logging.workers.RotatingFileHandler",
             "formatter": "file",
             "encoding": "UTF-8",
             "filename": os.path.join(LOGGING_DIR, 'app.log'),
@@ -34,7 +36,7 @@ LOGGING = {
             "backupCount": 4
         },
         "api_file": {
-            "class": "logging.handlers.RotatingFileHandler",
+            "class": "logging.workers.RotatingFileHandler",
             "formatter": "file",
             "encoding": "UTF-8",
             "filename": os.path.join(LOGGING_DIR, 'api.log'),
@@ -42,7 +44,7 @@ LOGGING = {
             "backupCount": 4
         },
         "task_file": {
-            "class": "logging.handlers.RotatingFileHandler",
+            "class": "logging.workers.RotatingFileHandler",
             "formatter": "file",
             "encoding": "UTF-8",
             "filename": os.path.join(LOGGING_DIR, 'task.log'),
@@ -53,24 +55,27 @@ LOGGING = {
     },
     "loggers": {
         "project": {
-            "handlers": ["console", "file"],
+            "workers": ["console", "file"],
             "level": "INFO",
             "propagate": False,
         },
         "django": {
-            "handlers": ["console", ],
+            "workers": ["console", ],
             "level": "INFO",
             "propagate": False
         },
         "api": {
-            "handlers": ["console", 'api_file'],
+            "workers": ["console", 'api_file'],
             "level": "INFO",
             "propagate": False
         },
         "task": {
-            "handlers": ["console", "task_file"],
+            "workers": ["console", "task_file"],
             "level": "INFO",
             "propagate": False
         }
     },
 }
+
+task_logger = logging.getLogger("task")
+api_logger = logging.getLogger("api")

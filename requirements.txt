@@ -20,3 +20,10 @@ djangorestframework-simplejwt[crypto]
 celery==5.3.6
 django-celery-beat==2.5.0 # https://github.com/celery/django-celery-beat
 django-celery-results==2.5.1 # https://github.com/celery/django-celery-results
+
+
+# Third party
+# ------------------------------------------------------------------------------
+python3-nmap==1.6.0
+beautifulsoup4==4.12.2
+bs4=0.0.1
