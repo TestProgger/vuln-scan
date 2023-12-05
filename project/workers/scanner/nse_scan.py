@@ -1,7 +1,8 @@
 import os
 
 from project.workers.base import BaseWorker
-from project.workers.scanner.consts import PARENT_NAME, HandlersNames
+from project.workers.scanner.consts import WorkersNames
+from project.workers.consts import ParentWorker
 from project.workers.scanner.serializers import NseScannerSerializer
 import nmap3
 from django.conf import settings
@@ -12,8 +13,8 @@ from bs4 import BeautifulSoup
 
 
 class NseScan(BaseWorker):
-    parent = PARENT_NAME
-    name = HandlersNames.NSE_SCANNER.value
+    parent = ParentWorker.SCANNER.value
+    name = WorkersNames.NSE_SCANNER.value
     serializer = NseScannerSerializer
     nmap = nmap3.Nmap()
 

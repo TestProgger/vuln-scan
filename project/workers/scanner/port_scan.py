@@ -1,12 +1,13 @@
 from project.workers.base import BaseWorker
-from project.workers.scanner.consts import PARENT_NAME, HandlersNames
+from project.workers.scanner.consts import WorkersNames
+from project.workers.consts import ParentWorker
 from project.workers.scanner.serializers import PortScannerSerializer
 import nmap3
 
 
 class PortScanner(BaseWorker):
-    parent = PARENT_NAME
-    name = HandlersNames.PORT_SCANNER.value
+    parent = ParentWorker.SCANNER.value
+    name = WorkersNames.PORT_SCANNER.value
     serializer = PortScannerSerializer
     nmap = nmap3.NmapScanTechniques()
 
