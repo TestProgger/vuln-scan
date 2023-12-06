@@ -1,5 +1,8 @@
+import os
+
 from project.workers.base import BaseWorker
-from project.workers.scanner.consts import WorkersNames, NmapScriptKey, NmapTableElemKey
+from project.workers.scanner.consts import NmapScriptKey, NmapTableElemKey
+from project.workers.os.consts import WorkersNames
 from project.workers.consts import ParentWorker
 from project.workers.scanner.serializers import NseScannerSerializer
 from django.conf import settings
@@ -8,9 +11,9 @@ from uuid import uuid4
 from bs4 import BeautifulSoup
 
 
-class NseScan(BaseWorker):
-    parent = ParentWorker.SCANNER.value
-    name = WorkersNames.NSE_SCANNER.value
+class Scan(BaseWorker):
+    parent = ParentWorker.OS.value
+    name = WorkersNames.SCAN.value
     serializer = NseScannerSerializer
 
     def run(self):

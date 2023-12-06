@@ -7,7 +7,7 @@ from project.workers.scanner.nse_scan import NseScan
 def execute_command(**kwargs):
     print(f"{kwargs=}")
     try:
-        result = NseScan().handle(target="192.168.109.0/24", script="*vuln*")
+        result = NseScan().handle(target="127.0.0.1", script="*vuln*")
 
         print(result)
 
