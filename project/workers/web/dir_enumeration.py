@@ -6,7 +6,7 @@ from django.conf import settings
 import subprocess
 
 
-class DirEnumeration(BaseWorker):
+class DirEnumerationWorker(BaseWorker):
     parent = ParentWorker.WEB.value
     name = WorkerNames.DIR_ENUMERATION.value
     serializer = DirEnumerationSerializer
@@ -23,4 +23,4 @@ class DirEnumeration(BaseWorker):
         if process.returncode != 0:
             raise Exception(process.stderr.decode("utf-8"))
 
-        return {"result": process.stdout.decode("utf-8")}
+        return {"message": process.stdout.decode("utf-8")}

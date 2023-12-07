@@ -6,6 +6,7 @@ from django.conf import settings
 import subprocess
 from uuid import uuid4
 from bs4 import BeautifulSoup
+import os
 
 
 class NseScan(BaseWorker):
@@ -41,7 +42,7 @@ class NseScan(BaseWorker):
         file_name = kwargs.get("file_name")
         with open(file_name) as fr:
             parser = BeautifulSoup(fr.read(), "xml")
-        # os.remove(file_name)
+        os.remove(file_name)
         host_tags = parser.find_all("host")
 
         result = []
@@ -107,7 +108,6 @@ class NseScan(BaseWorker):
             result.append(result_dict)
 
         return result
-
 
     def __extract_cve_ids(self, table):
         is_cve = table.find("elem", key=NmapTableElemKey.TYPE.value).text == "cve"

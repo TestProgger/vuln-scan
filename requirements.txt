@@ -27,3 +27,5 @@ django-celery-results==2.5.1 # https://github.com/celery/django-celery-results
 python3-nmap==1.6.0
 beautifulsoup4==4.12.2
 bs4=0.0.1
+PyYAML==6.0.1
+Faker==20.1.0

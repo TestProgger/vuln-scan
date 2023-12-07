@@ -23,7 +23,7 @@ class SqlInjectionWorker(BaseWorker):
         if process.returncode != 0:
             raise Exception(process.stderr.decode("utf-8"))
 
-        return {"result": process.stdout.decode("utf-8")}
+        return {"message":  process.stdout.decode("utf-8")}
 
     def format(self, **kwargs):
         return kwargs

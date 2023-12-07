@@ -39,7 +39,13 @@ class BaseWorker(AbstractBaseWorker):
             return validation_errors, False
         try:
             result = self.run()
-            return self.format(**result), True
+            res = self.format(**result)
+            return {
+                "type": "instruction",
+                "result": res,
+                "name": self.name,
+                "parent": self.parent
+            }, True
         except Exception as ex:
             return f"{ex=}", False
 
@@ -55,3 +61,47 @@ class BaseWorker(AbstractBaseWorker):
             self.serialized_data = serializer.validated_data
             return
         return serializer.errors()
+
+
+class Singleton(object):
+    _instances = {}
+
+    def __new__(cls, *args, **kwargs):
+        if cls.__name__ not in cls._instances:
+            cls._instances[cls.__name__] = super().__new__(cls, *args, **kwargs)
+        return cls._instances[cls.__name__]
+
+
+class Manager(Singleton):
+
+    _workers = {}
+
+    def __init__(
+            self,
+            worker: BaseWorker = BaseWorker
+    ):
+        for subclass in worker.__subclasses__():
+            self.register_worker(subclass)
+            self.__init__(subclass)
+
+    def register_worker(self, worker: Type[BaseWorker]):
+        if worker.parent.lower() in self._workers:
+            if worker.name.lower() in self._workers[worker.parent.lower()]:
+                raise Exception(f"Duplicate name: name={worker.name} already use in {worker.__name__}")
+        else:
+            self._workers[worker.parent.lower()] = {}
+
+        if not (worker.parent and worker.name):
+            raise Exception("Empty values in parent or name")
+
+        self._workers[worker.parent.lower()][worker.name.lower()] = worker
+
+    def check_exists(self, parent: str, name: str):
+        return bool(self._workers.get(parent.lower(), {}).get(name.lower()))
+
+    def handle(self, parent: str, name: str, **kwargs):
+        if self.check_exists(parent.lower(), name.lower()):
+            worker = self._workers.get(parent.lower(), {}).get(name.lower())
+            return worker().handle(**kwargs)
+
+        raise Exception(f"Not found worker with {parent=} {name=}")

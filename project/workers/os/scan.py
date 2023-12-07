@@ -1,5 +1,4 @@
 import os
-
 from project.workers.base import BaseWorker
 from project.workers.scanner.consts import NmapScriptKey, NmapTableElemKey
 from project.workers.os.consts import WorkersNames
@@ -44,7 +43,7 @@ class Scan(BaseWorker):
         file_name = kwargs.get("file_name")
         with open(file_name) as fr:
             parser = BeautifulSoup(fr.read(), "xml")
-        # os.remove(file_name)
+        os.remove(file_name)
         host_tags = parser.find_all("host")
 
         result = []
@@ -71,6 +70,7 @@ class Scan(BaseWorker):
                 port_service_version = host_port.find("service").get("version")
                 port_scripts = host_port.find_all("script")
                 port_result_dict = {
+                    "host": address,
                     "port": host_port.get("portid"),
                     "protocol": host_port.get("protocol"),
                     "state": port_state,
@@ -110,7 +110,6 @@ class Scan(BaseWorker):
             result.append(result_dict)
 
         return result
-
 
     def __extract_cve_ids(self, table):
         is_cve = table.find("elem", key=NmapTableElemKey.TYPE.value).text == "cve"
