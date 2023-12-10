@@ -47,7 +47,12 @@ class BaseWorker(AbstractBaseWorker):
                 "parent": self.parent
             }, True
         except Exception as ex:
-            return f"{ex=}", False
+            return {
+                "type": "instruction",
+                "result": {"error": str(ex)},
+                "name": self.name,
+                "parent": self.parent
+            }, False
 
     def run(self):
         return self.serialized_data

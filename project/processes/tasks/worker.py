@@ -52,17 +52,20 @@ def worker(**kwargs):
         value=json.dumps(result)
     )
 
-    if worker_body.get("exploit"):
-        exploits, obj = depth_extractor(result, "vulns")
-        for exploit in exploits:
-            run_exploit.apply_async(
-                kwargs={
-                    TaskKwarg.PROCESS_ID.value: process_id,
-                    TaskKwarg.EXPLOIT_BODY.value: obj,
-                    TaskKwarg.EXPLOIT_NAME.value: exploit,
-                    TaskKwarg.SCENARIO_BLOCK_ID.value: scenario_block_id
-                }
-            )
+    try:
+        if worker_body.get("exploit"):
+            exploits, obj = depth_extractor(result, "vulns")
+            for exploit in exploits:
+                run_exploit.apply_async(
+                    kwargs={
+                        TaskKwarg.PROCESS_ID.value: process_id,
+                        TaskKwarg.EXPLOIT_BODY.value: obj,
+                        TaskKwarg.EXPLOIT_NAME.value: exploit,
+                        TaskKwarg.SCENARIO_BLOCK_ID.value: scenario_block_id
+                    }
+                )
+    except:
+        pass
 
     trigger.is_completed = True
     trigger.save()

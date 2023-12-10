@@ -8,18 +8,27 @@ import subprocess
 
 class DirEnumerationWorker(BaseWorker):
     parent = ParentWorker.WEB.value
-    name = WorkerNames.DIR_ENUMERATION.value
+    name = WorkerNames.HTTP_ENUM.value
     serializer = DirEnumerationSerializer
 
-    wordlist = settings.BASE_DIR / "projects" / "workers" / "web" / "wordlists" / "common.txt"
+    wordlist = settings.BASE_DIR / "project" / "workers" / "web" / "wordlists" / "common.txt"
 
     def run(self):
         process = subprocess.run(
-            args=["dirb", self.serialized_data.get("target"), str(self.wordlist)],
+            args=[
+                "gobuster",
+                "-t", "20",
+                "-u", self.serialized_data.get("target"),
+                "-w", str(self.wordlist),
+                "--hide-length",
+                "--status-codes", "200,201,300,301",
+                "--status-codes-blacklist", "\"\""
+            ],
+
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE
         )
-
+        print(process.stdout.decode("utf-8"))
         if process.returncode != 0:
             raise Exception(process.stderr.decode("utf-8"))
 

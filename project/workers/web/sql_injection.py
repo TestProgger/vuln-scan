@@ -1,3 +1,7 @@
+import json
+
+import requests
+
 from project.workers.consts import ParentWorker
 from project.workers.web.consts import WorkerNames
 from project.workers.web.serializers import SqlInjectionSerializer
@@ -7,7 +11,7 @@ import subprocess
 
 class SqlInjectionWorker(BaseWorker):
     parent = ParentWorker.WEB.value
-    name = WorkerNames.SQL_INJECTION.value
+    name = WorkerNames.SCAN.value
     serializer = SqlInjectionSerializer
 
     def run(self):
@@ -20,10 +24,20 @@ class SqlInjectionWorker(BaseWorker):
             stderr=subprocess.PIPE
         )
 
-        if process.returncode != 0:
-            raise Exception(process.stderr.decode("utf-8"))
+        r = requests.get(f"{self.serialized_data.get('target')} or 1=1;")
 
-        return {"message":  process.stdout.decode("utf-8")}
+
+
+        # print(process.stdout.decode("utf-8"))
+
+        # if process.returncode != 0:
+        #     raise Exception(process.stderr.decode("utf-8"))
+
+        # return {"message":  process.stdout.decode("utf-8")}
+
+        return {
+            "messages": r.json()
+        }
 
     def format(self, **kwargs):
         return kwargs

@@ -28,7 +28,8 @@ DJANGO_APPS = [
 
 PROJECT_APPS = [
     "project.scenarios",
-    "project.processes"
+    "project.processes",
+    "project.users"
 ]
 
 THIRD_PARTY_APPS = [

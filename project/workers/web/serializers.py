@@ -6,7 +6,8 @@ class BaseWebSerializer(serializers.Serializer):
 
 
 class SqlInjectionSerializer(BaseWebSerializer):
-    ...
+    exploit = serializers.BooleanField(required=False, allow_null=True, default=True)
+
 
 class DirEnumerationSerializer(BaseWebSerializer):
-    ...
+    random_agent = serializers.BooleanField(required=False, allow_null=True, default=True)
