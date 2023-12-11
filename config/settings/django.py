@@ -14,8 +14,8 @@ CORS_ALLOW_ALL_ORIGINS = env.bool('DJANGO_CORS_ALLOW_ALL_ORIGINS', default=True)
 os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
 DJANGO_ALLOW_ASYNC_UNSAFE = True
 
-# AUTH_USER_MODEL = 'auth_user.User'
 APPEND_SLASH = False
+
 
 DJANGO_APPS = [
     'django.contrib.admin',
@@ -40,6 +40,8 @@ THIRD_PARTY_APPS = [
 
 INSTALLED_APPS = DJANGO_APPS + PROJECT_APPS + THIRD_PARTY_APPS
 
+
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -52,6 +54,10 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'config.urls'
+
+AUTH_USER_MODEL = 'users.User'
+
+APPEND_SLASH = True
 
 TEMPLATES = [
     {

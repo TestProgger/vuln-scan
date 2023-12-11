@@ -13,7 +13,7 @@ class ProcessTrigger(AbstractCreatedUpdateBaseModel):
 
 class ProcessTriggerMessage(AbstractCreatedUpdateBaseModel):
     trigger = models.ForeignKey("processes.ProcessTrigger", on_delete=models.CASCADE)
-    value = models.TextField(null=True, blank=True)
+    value = models.JSONField(null=True, blank=True)
     parent = models.ForeignKey(to="self", on_delete=models.CASCADE, null=True, blank=True)
 
     class Meta:

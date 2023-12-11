@@ -1,6 +1,6 @@
 from django.db import models
 from project.utils.models import AbstractCreatedUpdateBaseModel, AbstractDictionaryModel
-from django.contrib.auth.models import User
+from django.conf import settings
 
 
 class ScenarioStatus(AbstractDictionaryModel):
@@ -10,8 +10,7 @@ class ScenarioStatus(AbstractDictionaryModel):
 
 class Scenario(AbstractCreatedUpdateBaseModel):
     name = models.CharField(max_length=255)
-    file = models.ForeignKey("scenarios.File", on_delete=models.RESTRICT, null=True, blank=True)
-    owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     status = models.ForeignKey("scenarios.ScenarioStatus", on_delete=models.CASCADE, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     value = models.JSONField(null=True, blank=True)
