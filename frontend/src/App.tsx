@@ -1,5 +1,5 @@
-import { LoadingPage, HomePage, AuthPage } from '@pages';
-import { Error } from '@components';
+import { LoadingPage, HomePage, AuthPage, ScenariosPage } from '@pages';
+import { Error, Header } from '@components';
 import { observer } from 'mobx-react-lite'
 import './App.scss'
 import { usePersistentStore } from '@store'
@@ -26,14 +26,19 @@ function App() {
 
   if (!!rootStore.token.is_authenticated){
     return (
-      <BrowserRouter>
-        <Routes>
-          <Route path='/loading' element={<LoadingPage to="/home"/>}/>
-          <Route path='/home' element={<HomePage/>}/>
-          <Route path='*' element={<Navigate to='/loading' />}/>
-        </Routes>
-        <Error/>
-      </BrowserRouter>
+      <>
+        <BrowserRouter>
+          <Header/>
+          <Routes>
+            {/* <Route path='/loading' element={<LoadingPage to="/home"/>}/> */}
+            <Route path='/home'>
+              <Route path='scenarios' element={<ScenariosPage/>}/>
+            </Route>
+            <Route path='*' element={<Navigate to='/home' />}/>
+          </Routes>
+          <Error/>
+        </BrowserRouter>
+      </>
     )
   }
   return (

@@ -1,22 +1,20 @@
 import { observer } from "mobx-react-lite";
 import { FC } from "react";
-import './Home.scss';
 import styled from "styled-components";
 import { Route, Routes, useNavigate } from "react-router-dom";
 
 
-const HomePage:FC = () => {
-    return(
-        <div className="home-page">
-            <HomePageBody>
-                <Routes>
-                    <Route path="/home">
-                        <Route path="scenarios" element={<div>Scenarios</div>}/>
+const Header:FC = () => {
+    const navigate = useNavigate()
 
-                    </Route>
-                </Routes>
-            </HomePageBody>
-        </div>
+
+    return(
+        <HomePageHeader>
+            <HomePageHeaderLeftCotainer>
+                <NavButton onClick={() => navigate('/home/scenarios')}> Сценарии </NavButton>
+            </HomePageHeaderLeftCotainer>
+            <HomePageHeaderRightCotainer></HomePageHeaderRightCotainer>
+        </HomePageHeader>
     )
 }
 
@@ -56,12 +54,5 @@ const NavButton = styled.button`
     }
 `
 
-const HomePageBody = styled.div`
-    display: flex;
-    margin: 20px 40px;
-    padding: 10px;
-    border: 1px solid red;
-`
 
-
-export default observer(HomePage)
+export default observer(Header)
