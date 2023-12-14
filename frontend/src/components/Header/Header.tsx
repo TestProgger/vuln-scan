@@ -2,18 +2,22 @@ import { observer } from "mobx-react-lite";
 import { FC } from "react";
 import styled from "styled-components";
 import { Route, Routes, useNavigate } from "react-router-dom";
+import { usePersistentStore } from "@store";
 
 
 const Header:FC = () => {
     const navigate = useNavigate()
+    const rootStore = usePersistentStore()
 
 
     return(
         <HomePageHeader>
             <HomePageHeaderLeftCotainer>
-                <NavButton onClick={() => navigate('/home/scenarios')}> Сценарии </NavButton>
+                <NavButton onClick={() => navigate('/scenarios')}> Сценарии </NavButton>
             </HomePageHeaderLeftCotainer>
-            <HomePageHeaderRightCotainer></HomePageHeaderRightCotainer>
+            <HomePageHeaderRightCotainer>
+                <NavButton onClick={() => rootStore.logout()}> Выход </NavButton>
+            </HomePageHeaderRightCotainer>
         </HomePageHeader>
     )
 }

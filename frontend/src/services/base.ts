@@ -84,9 +84,11 @@ class BaseService {
         try {
             console.log(method, url, data, params)
             const response = await this.session.request({ method, url, data, params })
+            console.log("--------------@#@!#")
             return this.formatResponse<T>(response.data)
         }
         catch (e) {
+            console.log("====================@#@!#")
             const axiosError = e as AxiosError;
             const setTokenEvent = new CustomEvent('set-token', { detail: { access: this.access, refresh: this.refresh } });
             const LogOutEvent = new Event('logout');
@@ -110,6 +112,11 @@ class BaseService {
                     document.dispatchEvent(setTokenEvent)
                     return await this.request<T>(method, url, data, {}, is_retry=true);
                 }
+            }
+            console.log("@#@!#", axiosError)
+            if(axiosError.response?.status === 400){
+                const errorEvent = new CustomEvent('error-response', { detail: { message: axiosError.response?.data?.status?.message} });
+                document.dispatchEvent(errorEvent)
             }
 
             return { body: null, status: { message: "Ошибка при запросе", code: 404 } } as IResponse<T>
@@ -139,6 +146,7 @@ class BaseService {
 
     private formatResponse<T>(data: object): IResponse<T> {
         try{
+            console.log("1")
             if ("detail" in data) {
                 const errorEvent = new CustomEvent('error-response', { detail: { message: data['detail']} });
                 document.dispatchEvent(errorEvent)
@@ -151,6 +159,7 @@ class BaseService {
                     }
                 } as IResponse<T>
             }
+            console.log("2")
             if (!("body" in data)) {
                 return { 
                     success: true,
@@ -161,9 +170,11 @@ class BaseService {
                     }
                 } as IResponse<T>
             }
-            
+            console.log("3")
             if ("status" in data){
+                console.log("STATUS")
                 if("code" in (data["status"] as object) && data["status"]["code"] > 210){
+                    console.log("DISPATCH")
                     const errorEvent = new CustomEvent('error-response', { detail: { message: data["status"]["message"]} });
                     document.dispatchEvent(errorEvent)
                     return { ...data, success: false, } as IResponse<T>

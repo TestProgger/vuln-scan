@@ -1,4 +1,4 @@
-import { LoadingPage, HomePage, AuthPage, ScenariosPage } from '@pages';
+import { LoadingPage, HomePage, AuthPage, ScenariosHomePage, ScenarioViewPage } from '@pages';
 import { Error, Header } from '@components';
 import { observer } from 'mobx-react-lite'
 import './App.scss'
@@ -31,10 +31,11 @@ function App() {
           <Header/>
           <Routes>
             {/* <Route path='/loading' element={<LoadingPage to="/home"/>}/> */}
-            <Route path='/home'>
-              <Route path='scenarios' element={<ScenariosPage/>}/>
+            <Route path='/'>
+              <Route path='scenarios' element={<ScenariosHomePage/>}/>
+              <Route path='scenarios/:scenarioId' element={<ScenarioViewPage/>}/>
             </Route>
-            <Route path='*' element={<Navigate to='/home' />}/>
+            <Route path='*' element={<Navigate to='/' />}/>
           </Routes>
           <Error/>
         </BrowserRouter>

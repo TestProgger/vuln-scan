@@ -6,12 +6,15 @@ interface IScenarioItem{
     id: string
     name: string
     created_at: string | Date
+    onClick: () => void
 }
-export const ScenarioItem: FC<IScenarioItem>  = ({ index, id, name, created_at }) => {
+export const ScenarioItem: FC<IScenarioItem>  = ({ index, id, name, created_at, onClick }) => {
     return(
-        <ScenarioItemContainer>
-            <ScenarioItemIndex> {`${index}.`} </ScenarioItemIndex>
-            <ScenarioItemName> {name} </ScenarioItemName>
+        <ScenarioItemContainer onClick={() => onClick()}>
+            <ScenarioTextContainer>
+                <ScenarioItemIndex> {`${index}.`} </ScenarioItemIndex>
+                <ScenarioItemName> {name} </ScenarioItemName>
+            </ScenarioTextContainer>
             <ScenarioItemCreatedAt> {created_at.toLocaleString()} </ScenarioItemCreatedAt>
         </ScenarioItemContainer>
     )
@@ -21,6 +24,7 @@ const ScenarioItemContainer = styled.div`
     display: flex;
     width: 700px;
     align-items: center;
+    justify-content: space-between;
     padding: 5px 20px;
 
     font-size: 18px;
@@ -38,6 +42,10 @@ const ScenarioItemContainer = styled.div`
         transform: scale(1.05);
     }
 
+`
+
+const ScenarioTextContainer = styled.div`
+    display: flex;
 `
 
 const ScenarioItemIndex = styled.div`

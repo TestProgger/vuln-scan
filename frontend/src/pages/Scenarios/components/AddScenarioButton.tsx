@@ -8,7 +8,7 @@ interface IScenarioAdd{
 }
 export const AddScenarioButton: FC<IScenarioAdd> = ({onClick}) => {
     return(
-        <Container>
+        <Container onClick={() => onClick()}>
             <IconContainer> <PlusIcon width="24" height="24" fill="#fff"/> </IconContainer>
             <TextContainer> Добавить сценарий </TextContainer>
         </Container>
