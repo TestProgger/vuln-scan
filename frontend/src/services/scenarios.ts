@@ -1,6 +1,6 @@
 import BaseService from "./base";
 import { IListResponse } from "./types/base";
-import { IListScenarioItemResponse, IUploadScenarioResponse } from "./types/scenarios";
+import { IListScenarioItemResponse, IReadScenarioResponse, IUploadScenarioResponse } from "./types/scenarios";
 
 
 export class ScenariosService extends BaseService{
@@ -15,5 +15,13 @@ export class ScenariosService extends BaseService{
 
     public async upload(name: string, file: string){
         return await this.post<IUploadScenarioResponse>('/scenarios/upload/', {name, file})
+    }
+
+    public async read(id: string){
+        return await this.get<IReadScenarioResponse>('/scenarios/get/', {id})
+    }
+
+    public async update(id: string, file: string){
+        return await this.post<{id: string}>('/scenarios/update/', {id, file})
     }
 }

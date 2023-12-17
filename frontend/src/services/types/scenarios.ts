@@ -11,3 +11,7 @@ export interface IUploadScenarioResponse {
     name: string
     created_at: string
 }
+
+export interface IReadScenarioResponse extends IUploadScenarioResponse{
+    text: string
+}
