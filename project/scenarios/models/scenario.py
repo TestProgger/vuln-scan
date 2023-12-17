@@ -13,10 +13,13 @@ class Scenario(AbstractCreatedUpdateBaseModel):
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     status = models.ForeignKey("scenarios.ScenarioStatus", on_delete=models.CASCADE, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
-    value = models.JSONField(null=True, blank=True)
+    text = models.TextField()
+    value = models.JSONField()
+    hashsum = models.CharField(max_length=130)
     type = models.CharField(max_length=255, null=True, blank=True)
 
     class Meta:
+        unique_together = ["owner", "hashsum"]
         db_table = "scenario"
 
 

@@ -12,3 +12,7 @@ class TaskKwarg(Enum):
     PARENT_INSTRUCTION = "parent_instruction"
     SCENARIO_BLOCK_ID = "scenario_block_id"
     PROCESS_TRIGGER_MESSAGE_ID = "process_trigger_message_id"
+
+
+class CountdownTask(Enum):
+    CHECK_PROCESS_COMPLETED = 5

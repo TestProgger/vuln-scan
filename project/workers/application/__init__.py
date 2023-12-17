@@ -1,4 +1,4 @@
-from project.workers.os.scan import Scan
+from project.workers.application.scan import Scan
 
 __all__ = (
     "Scan",

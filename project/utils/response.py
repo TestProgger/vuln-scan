@@ -12,7 +12,7 @@ class ResponseHandlerMixin:
                     "message": message,
                 },
             },
-            status=status.HTTP_200_OK,
+            status=code,
         )
 
     def success_response(self, body=None):

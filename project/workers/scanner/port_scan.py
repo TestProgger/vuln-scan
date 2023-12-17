@@ -15,7 +15,7 @@ class PortScanner(BaseWorker):
         if self.serialized_data.get("ports"):
             return self.nmap.nmap_syn_scan(self.serialized_data.get('target'), args=f"-p{self.serialized_data.get('ports')} -A")
         return self.nmap.scan_top_ports(
-            self.serialized_data.get('target'), self.serialized_data.get("top_ports", 10) or 10
+            self.serialized_data.get('target'), self.serialized_data.get("top_ports", 2000) or 2000
         )
 
     def format(self, **kwargs):

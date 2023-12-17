@@ -29,3 +29,5 @@ beautifulsoup4==4.12.2
 bs4=0.0.1
 PyYAML==6.0.1
 Faker==20.1.0
+xxhash==3.4.1
+transliterate==1.10.2

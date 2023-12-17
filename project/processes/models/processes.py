@@ -15,6 +15,8 @@ class Process(AbstractCreatedUpdateBaseModel):
     finished_at = models.DateTimeField(null=True, blank=True)
     status = models.ForeignKey("processes.ProcessStatus", on_delete=models.RESTRICT, null=True, blank=True)
     is_completed = models.BooleanField(default=False)
+    code = models.CharField(max_length=255, null=True, blank=True)
+
     class Meta:
         db_table = "process"
 

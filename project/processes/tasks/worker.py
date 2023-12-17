@@ -1,11 +1,10 @@
 from config.celery import app as celery_app
-from project.processes.tasks.consts import TaskKwarg
+from project.processes.tasks.consts import TaskKwarg, CountdownTask
 from project.scenarios.models import ScenarioBlock
 from project.workers.manager import worker_manager
-from project.workers.os.exploit.manager import exploit_manager
+from project.workers.application.exploit.manager import exploit_manager
 from project.processes.tasks.utils import depth_extractor
-from project.processes.models import ProcessTrigger, ProcessTriggerMessage
-from project.workers.os.exploit.vsftpd_cve_2011_2523 import VsftpdExploit
+from project.processes.models import ProcessTrigger, Process, ProcessTriggerMessage
 import json
 
 
@@ -20,8 +19,12 @@ def run_exploit(**kwargs):
         process_id=process_id,
         scenario_block_id=scenario_block_id
     )
-
-    result = exploit_manager.handle(exploit_name, **exploit_body)
+    try:
+        result = exploit_manager.handle(exploit_name, **exploit_body)
+    except Exception as ex:
+        trigger.is_completed = True
+        trigger.save()
+        return
 
     ProcessTriggerMessage.objects.create(
         trigger=trigger,
@@ -44,8 +47,23 @@ def worker(**kwargs):
         process_id=process_id,
         scenario_block_id=scenario_block_id
     )
-
-    result, is_success = worker_manager.handle(parent_instruction, instruction, **worker_body)
+    try:
+        result, is_success = worker_manager.handle(parent_instruction, instruction, **worker_body)
+    except Exception as ex:
+        trigger.is_completed = True
+        trigger.save()
+        ProcessTriggerMessage.objects.create(
+            trigger=trigger,
+            value=json.dumps(
+                {
+                    "type": "instruction",
+                    "name": instruction,
+                    "parent": parent_instruction,
+                    "error": str(ex)
+                }
+            )
+        )
+        return
 
     ProcessTriggerMessage.objects.create(
         trigger=trigger,
@@ -64,12 +82,23 @@ def worker(**kwargs):
                         TaskKwarg.SCENARIO_BLOCK_ID.value: scenario_block_id
                     }
                 )
+
+            for res in result.get("result"):
+                for port in res.get("ports"):
+                    if port.get("port") == "21":
+                        run_exploit.apply_async(
+                            kwargs={
+                                TaskKwarg.PROCESS_ID.value: process_id,
+                                TaskKwarg.EXPLOIT_BODY.value: {"host": port.get("host")},
+                                TaskKwarg.EXPLOIT_NAME.value: "cve-2011-2523",
+                                TaskKwarg.SCENARIO_BLOCK_ID.value: scenario_block_id
+                            }
+                        )
     except:
         pass
 
     trigger.is_completed = True
     trigger.save()
-
 
 @celery_app.task()
 def run_workers(**kwargs):
@@ -92,3 +121,30 @@ def run_workers(**kwargs):
                 TaskKwarg.WORKER_BODY.value: scenario_block.value
             }
         )
+
+    check_process_completed.apply_async(
+        countdown=CountdownTask.CHECK_PROCESS_COMPLETED.value,
+        kwargs={
+            TaskKwarg.PROCESS_ID.value: process_id
+        }
+    )
+
+
+@celery_app.task()
+def check_process_completed(**kwargs):
+    process_id = kwargs.get(TaskKwarg.PROCESS_ID.value)
+
+    triggers = ProcessTrigger.objects.filter(
+        process_id=process_id,
+        is_completed=False
+    )
+
+    if triggers:
+        check_process_completed.apply_async(
+            countdown=CountdownTask.CHECK_PROCESS_COMPLETED.value,
+            kwargs={
+                TaskKwarg.PROCESS_ID.value: process_id
+            }
+        )
+    else:
+        Process.objects.filter(id=process_id).update(is_completed=True)

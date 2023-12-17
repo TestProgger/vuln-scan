@@ -6,3 +6,5 @@ class ParentWorker(Enum):
     WEB = "web"
     NETWORK = "network"
     OS = "os"
+    EXPLOIT = "exploit"
+    APPLICATION = "application"

