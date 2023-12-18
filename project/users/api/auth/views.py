@@ -32,4 +32,6 @@ class AuthViewSet(ViewSet, ResponseHandlerMixin):
         serializer = TokenRefreshSerializer(data=request.data)
         if not serializer.is_valid():
             raise Exception(ResponseError.INVALID_REFRESH_TOKEN.value)
-        return {**serializer.validated_data, "refresh": request.data.get("refresh")}
+        return self.success_response(
+            body={**serializer.validated_data, "refresh": request.data.get("refresh")}
+        )

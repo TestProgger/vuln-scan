@@ -1,4 +1,5 @@
 import json
+from typing import Union
 
 import transliterate
 from django.utils.text import slugify
@@ -9,7 +10,11 @@ from rest_framework.request import Request
 
 from project.utils.decorators import log_viewset_method
 from project.utils.response import ResponseHandlerMixin
-from project.processes.api.serializers import GetLastProcessInfoSerializer, RunProcessSerializer
+from project.processes.api.serializers import (
+    GetLastProcessInfoSerializer,
+    RunProcessSerializer,
+    ListProcessResponseModelSerializer
+)
 from project.processes.models import Process, ProcessTrigger, ProcessTriggerMessage
 from project.processes.tasks import run_workers
 import secrets
@@ -36,7 +41,7 @@ class ProcessViewSet(ViewSet, ResponseHandlerMixin):
         if not process:
             return self.success_response(
                 body={
-                    "list": [],
+                    "items": self._prepare_messages([]),
                     "is_completed": True,
                     "process_id": None,
                     "process_code": None
@@ -106,9 +111,75 @@ class ProcessViewSet(ViewSet, ResponseHandlerMixin):
             }
         )
 
-    def _prepare_messages(self, messages: QuerySet[ProcessTriggerMessage]):
-        result = []
+    @log_viewset_method()
+    def list(self, request: Request):
+        page = int(request.query_params.get("page", 1))
+        page_size = int(request.query_params.get("page_size", 20))
 
+        processes = Process.objects.filter(
+            owner=request.user
+        ).order_by('-finished_at')
+
+        total_count = processes.count()
+
+        try:
+            serializer = ListProcessResponseModelSerializer(
+                instance=processes[(page-1)*page_size: page*page_size],
+                many=True
+            )
+        except Exception as ex:
+            return self.success_response(
+                body={
+                    "list": [],
+                    "total": 0
+                }
+            )
+
+        return self.success_response(
+            body={
+                "list": serializer.data,
+                "total": total_count
+            }
+        )
+
+    @log_viewset_method()
+    def get(self, request: Request):
+        process_id = request.query_params.get("id")
+        process = Process.objects.filter(
+            id=process_id,
+            owner=request.user
+        ).first()
+
+        if not process:
+            return self.success_response(
+                body={
+                    "items": self._prepare_messages([]),
+                    "is_completed": True,
+                    "process_id": None,
+                    "process_code": None
+                }
+            )
+
+        triggers = ProcessTrigger.objects.filter(
+            process_id=process.pk
+        )
+
+        messages = ProcessTriggerMessage.objects.filter(
+            trigger__in=triggers
+        )
+
+        return self.success_response(
+            body={
+                "items": self._prepare_messages(messages),
+                "is_completed": process.is_completed,
+                "process_id": process.pk,
+                "process_code": process.code
+            }
+        )
+
+
+
+    def _prepare_messages(self, messages: Union[QuerySet[ProcessTriggerMessage], list]):
         result_map = {
             ParentWorker.APPLICATION.value: {
                 "info": [],
@@ -157,14 +228,6 @@ class ProcessViewSet(ViewSet, ResponseHandlerMixin):
                     result_map[ParentWorker.EXPLOIT.value]["info"].append(value)
             else:
                 result_map[value.get("parent")]["info"].append(value)
-
-            result.append(
-                {
-                    "id": message.pk,
-                    "value": value,
-                    "created_at": message.created_at.strftime("%d.%m.%Y %H:%S")
-                }
-            )
 
         return result_map
 

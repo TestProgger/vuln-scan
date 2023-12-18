@@ -5,6 +5,7 @@ from project.workers.manager import worker_manager
 from project.workers.application.exploit.manager import exploit_manager
 from project.processes.tasks.utils import depth_extractor
 from project.processes.models import ProcessTrigger, Process, ProcessTriggerMessage
+from django.utils import timezone
 import json
 
 
@@ -147,4 +148,7 @@ def check_process_completed(**kwargs):
             }
         )
     else:
-        Process.objects.filter(id=process_id).update(is_completed=True)
+        Process.objects.filter(id=process_id).update(
+            is_completed=True,
+            finished_at=timezone.now()
+        )
