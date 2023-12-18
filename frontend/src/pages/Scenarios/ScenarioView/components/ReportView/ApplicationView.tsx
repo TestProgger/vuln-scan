@@ -12,7 +12,7 @@ export const ApplicationView: FC<IApplicationView> = ({application}) => {
     }
     return (
         <ApplicationViewContainer>
-            <ApplicationViewHeader> Уровень: Приложений </ApplicationViewHeader>
+            <ApplicationViewHeader> Блок: Приложения </ApplicationViewHeader>
             <ApplicationViewBody>
                 <FindedHosts application={application} />
                 <OpenPorts application={application}/>
@@ -127,8 +127,8 @@ const ApplicationViewContainer = styled.div`
 
 const ApplicationViewHeader = styled.div`
     display: flex;
-    font-size: 22px;
-
+    font-size: 24px;
+    font-weight: bold;
     padding: 20px;
 `
 

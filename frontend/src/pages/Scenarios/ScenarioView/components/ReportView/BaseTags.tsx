@@ -47,7 +47,8 @@ export const MainViewContainer = styled.div`
 
 export const MainViewHeader = styled.div`
     display: flex;
-    font-size: 22px;
+    font-size: 24px;
+    font-weight: bold;
 
     padding: 20px;
 `

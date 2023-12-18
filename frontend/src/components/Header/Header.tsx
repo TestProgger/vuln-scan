@@ -14,6 +14,7 @@ const Header:FC = () => {
         <HomePageHeader>
             <HomePageHeaderLeftCotainer>
                 <NavButton onClick={() => navigate('/scenarios')}> Сценарии </NavButton>
+                <NavButton onClick={() => navigate('/processes')}> Процессы </NavButton>
             </HomePageHeaderLeftCotainer>
             <HomePageHeaderRightCotainer>
                 <NavButton onClick={() => rootStore.logout()}> Выход </NavButton>
@@ -34,6 +35,8 @@ const HomePageHeader = styled.div`
 
 const HomePageHeaderLeftCotainer = styled.div`
     padding: 10px;
+    display: flex;
+    gap: 20px;
     
 `
 

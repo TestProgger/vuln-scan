@@ -48,3 +48,15 @@ export interface IReportViewResponse{
     process_id: string
     process_code: string
 }
+
+export interface IListProcessesItem{
+    id: string
+    code: string
+    started_at: string
+    finished_at: string | null
+    scenario: {
+        id: string
+        name: string
+    }
+    is_completed: boolean
+}

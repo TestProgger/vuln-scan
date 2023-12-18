@@ -2,6 +2,7 @@ import { FC } from "react";
 import styled from "styled-components";
 import { ApplicationView } from "./ApplicationView";
 import { ScannerView } from "./ScannerView";
+import { ExploitView } from "./ExploitView";
 
 
 interface ITriggerMessageValue{
@@ -39,6 +40,7 @@ export const ReportView: FC<IReportView> = ({items}) => {
         <ReportViewContainer>
             <ScannerView scanner={items.scanner} />
             <ApplicationView application={items.application}/>
+            <ExploitView exploit={items.exploit} />
         </ReportViewContainer>
     )
 }

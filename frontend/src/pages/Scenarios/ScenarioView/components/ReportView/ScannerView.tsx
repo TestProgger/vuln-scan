@@ -14,7 +14,7 @@ export const ScannerView: FC<IScannerView> = ({scanner}) => {
     }
     return (
         <MainViewContainer>
-            <MainViewHeader> Информация об устройствах в сети </MainViewHeader>
+            <MainViewHeader> Блок: Сканер </MainViewHeader>
             <MainViewBody>
                 <FindedDevices scanner={scanner}/>
             </MainViewBody>
@@ -29,18 +29,22 @@ const FindedDevices: FC<IScannerView> = ({scanner}) => {
         return(<></>)
     }
     return (
-        <SubContainer>
+        <ScannerViewSubContainer>
             {/* <SubContainerHeader>  </SubContainerHeader> */}
-            <Table>
-                {
-                    scanner && scanner?.info && scanner.info?.length ? 
-                    scanner.info.map(item => <DeviceInfo host={item}/>)
-                    :null
-                }
-            </Table>
-        </SubContainer>
+            {
+                scanner && scanner?.info && scanner.info?.length ? 
+                scanner.info.map(item => <DeviceInfo host={item}/>)
+                :null
+            }
+        </ScannerViewSubContainer>
     )
 } 
+
+const ScannerViewSubContainer = styled.div`
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+`
 
 
 const DeviceInfo: FC<{host: any}> = ({host}) => {
@@ -81,12 +85,15 @@ const DeviceInfo: FC<{host: any}> = ({host}) => {
 }
 
 const DeviceSubContainer = styled.div`
-    
+    padding: 5px;
+    margin-bottom: 10px;
 `
 
 const DeviceHeader = styled.div`
     display: flex;
     font-size: 18px;
 
-    padding: 20px;
+    margin-top: 10px;
+    /* padding: 20px; */
+    border-bottom: 1px solid black;
 `
