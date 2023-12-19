@@ -25,4 +25,7 @@ export const SuccessButton = styled.button`
         box-shadow: none;
         transform: none;
     }
+    display: flex;
+    justify-content: center;
+    align-items: center;
 `

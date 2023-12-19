@@ -12,7 +12,7 @@ export const ApplicationView: FC<IApplicationView> = ({application}) => {
     }
     return (
         <ApplicationViewContainer>
-            <ApplicationViewHeader> Блок: Приложения </ApplicationViewHeader>
+            <ApplicationViewHeader> Блок: Приложений </ApplicationViewHeader>
             <ApplicationViewBody>
                 <FindedHosts application={application} />
                 <OpenPorts application={application}/>
@@ -23,7 +23,7 @@ export const ApplicationView: FC<IApplicationView> = ({application}) => {
 }
 
 
-const FindedHosts: FC<IApplicationView> = ({application}) => {
+const FindedHosts: FC<Omit<IApplicationView, "web">> = ({application}) => {
     return( 
         <SubContainer>
             <SubContainerHeader> Обнаруженные устройства </SubContainerHeader>
@@ -60,7 +60,7 @@ const FindedHosts: FC<IApplicationView> = ({application}) => {
 }
 
 
-const OpenPorts: FC<IApplicationView> = ({application}) => {
+const OpenPorts: FC<Omit<IApplicationView, "web">> = ({application}) => {
     if(
         !application || !application.info.length ||
         "error" in application.info[0]

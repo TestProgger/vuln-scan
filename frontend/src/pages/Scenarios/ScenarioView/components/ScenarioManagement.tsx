@@ -5,6 +5,7 @@ import { IProcessMessage, IReportViewResponse } from "@services/types/processes"
 import { FC, useEffect, useState } from "react";
 import styled from "styled-components";
 import { ReportView } from "./ReportView";
+import { Oval } from "react-loader-spinner";
 
 
 export interface IScenarioManagement{
@@ -14,6 +15,7 @@ export interface IScenarioManagement{
 }
 export const ScenarioManagement: FC<IScenarioManagement> = ({scenarioId, processesService, scenariosService}) => {
     const [lastReport, setLastReport] = useState<IReportViewResponse>();
+    const [isViewLoader, setIsViewLoader] = useState<boolean>(false)
 
     const handleStartScenario = async () => {
         const response = await processesService.runProcess(scenarioId)
@@ -27,6 +29,7 @@ export const ScenarioManagement: FC<IScenarioManagement> = ({scenarioId, process
         const response = await processesService.listLastProcessMessages(scenarioId)
         if(response.success){
             console.log(response.body)
+            setIsViewLoader(!response.body.is_completed)
             if (!response.body.is_completed && response.body.process_code && response.body.process_id){
                 setTimeout(() => loadLastProcessesMessages(), 1500)
             }else
@@ -43,7 +46,19 @@ export const ScenarioManagement: FC<IScenarioManagement> = ({scenarioId, process
     return (
         <ManagmentContainer>
             <ButtonContainer>
-                <SuccessButton onClick={() => handleStartScenario()}> Запустить </SuccessButton>
+                <SuccessButton onClick={() => handleStartScenario()}>
+                    <OvalContainer>
+                        <Oval 
+                            visible={isViewLoader}
+                            width={20} 
+                            height={20} 
+                            color="#fff" 
+                            strokeWidth={5}
+                            secondaryColor="#fff"
+                        />
+                    </OvalContainer>
+                     Запустить 
+                </SuccessButton>
                 <ErrorButton> Остановить </ErrorButton>
             </ButtonContainer>
             <ReportContainer>
@@ -75,4 +90,8 @@ const ReportContainer = styled.div`
     width: 100%;
     /* height: 100%; */
     min-height: 500px;
+`
+
+const OvalContainer = styled.div`
+    padding: 0 5px 0 0;
 `
