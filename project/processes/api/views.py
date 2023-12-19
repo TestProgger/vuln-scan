@@ -195,6 +195,9 @@ class ProcessViewSet(ViewSet, ResponseHandlerMixin):
             },
             ParentWorker.EXPLOIT.value: {
                 "info": []
+            },
+            ParentWorker.WEB.value: {
+                "info": []
             }
         }
         for message in messages:

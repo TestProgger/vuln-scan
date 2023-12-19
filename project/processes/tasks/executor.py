@@ -10,12 +10,6 @@ def execute_command(**kwargs):
         result = NseScan().handle(target="127.0.0.1", script="*vuln*")
 
         print(result)
-
-        # res = subprocess.run(
-        #     args=["nmap", "192.168.109.0/24", "-vvvvv"],
-        #     stdout=subprocess.PIPE,
-        #     stderr=subprocess.PIPE
-        # )
     except Exception as ex:
         print(ex)
         return

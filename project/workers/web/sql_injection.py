@@ -41,6 +41,8 @@ class SqlInjectionWorker(BaseWorker):
         # return {"message":  process.stdout.decode("utf-8")}
 
         return {
+            "name": "SQL-Injection",
+            "host": target,
             "messages": r.json()
         }
 
