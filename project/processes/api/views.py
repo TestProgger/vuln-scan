@@ -1,11 +1,12 @@
 import json
+from pathlib import Path
 from typing import Union
 
 import transliterate
 from django.utils.text import slugify
 from django.db.models import QuerySet
 from rest_framework.viewsets import ViewSet
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.request import Request
 
 from project.utils.decorators import log_viewset_method
@@ -21,7 +22,8 @@ import secrets
 from faker import Faker
 
 from project.workers.consts import ParentWorker
-
+import redis
+from redis.commands.json.path import Path
 _faker = Faker(['ru_RU'])
 
 
@@ -177,8 +179,6 @@ class ProcessViewSet(ViewSet, ResponseHandlerMixin):
             }
         )
 
-
-
     def _prepare_messages(self, messages: Union[QuerySet[ProcessTriggerMessage], list]):
         result_map = {
             ParentWorker.APPLICATION.value: {
@@ -235,5 +235,22 @@ class ProcessViewSet(ViewSet, ResponseHandlerMixin):
         return result_map
 
 
+class PayloadProcessViewSet(ViewSet, ResponseHandlerMixin):
+    permission_classes = (AllowAny, )
 
+    @log_viewset_method()
+    def create_message_from_payload(self, request: Request):
+        token = request.query_params.get('t')
+        data = request.query_params.get('d')
+
+        print(token, data)
+        try:
+            r = redis.Redis(db=4)
+            data = r.get(token)
+        except:
+            return self.success_response()
+
+        return self.success_response(
+            body=data
+        )
 
