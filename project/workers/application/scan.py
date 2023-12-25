@@ -60,13 +60,14 @@ class Scan(BaseWorker):
                 host_status = "up"
             try:
                 ip_address = host_tag.find("address", addrtype="ipv4").get("addr")
+                # if ip_address == settings.CURRENT_HOST_IP:
+                #     continue
             except:
                 continue
             try:
                 mac_address = host_tag.find("address", addrtype="mac").get("addr")
             except:
-                mac_address = "B4:B5:B6:D0:19:93"
-            print(f"{ip_address=} {self.self_ip=}")
+                mac_address = None
 
             result_dict.update(
                 {
@@ -83,7 +84,6 @@ class Scan(BaseWorker):
             host_ports = host_ports_tag.find_all("port")
 
             for host_port in host_ports:
-                print(host_port)
                 try:
                     port_state = host_port.find("state").get("state")
                     service_name = host_port.find("service").get("name") if host_port.find("service") else None

@@ -21,7 +21,14 @@ def run_exploit(**kwargs):
         scenario_block_id=scenario_block_id
     )
     try:
-        result = exploit_manager.handle(exploit_name, **exploit_body)
+        result = exploit_manager.handle(
+            exploit_name,
+            **{
+                **exploit_body,
+                "process_id": process_id,
+                "scenario_block_id": scenario_block_id
+            }
+        )
     except Exception as ex:
         trigger.is_completed = True
         trigger.save()
@@ -51,6 +58,7 @@ def worker(**kwargs):
     try:
         result, is_success = worker_manager.handle(parent_instruction, instruction, **worker_body)
     except Exception as ex:
+        print(f"{process_id=} {scenario_block_id=} {ex=}")
         trigger.is_completed = True
         trigger.save()
         ProcessTriggerMessage.objects.create(
@@ -141,6 +149,7 @@ def check_process_completed(**kwargs):
     )
 
     if triggers:
+        print(f"{process_id=} {triggers=}")
         check_process_completed.apply_async(
             countdown=CountdownTask.CHECK_PROCESS_COMPLETED.value,
             kwargs={

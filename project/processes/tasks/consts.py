@@ -15,4 +15,4 @@ class TaskKwarg(Enum):
 
 
 class CountdownTask(Enum):
-    CHECK_PROCESS_COMPLETED = 5
+    CHECK_PROCESS_COMPLETED = 7

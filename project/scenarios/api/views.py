@@ -146,6 +146,7 @@ class ScenarioViewSet(ViewSet, ResponseHandlerMixin):
             }
         )
 
+    @log_viewset_method()
     def get(self, request: Request):
         scenario_id = request.query_params.get("id")
         try:
@@ -153,7 +154,7 @@ class ScenarioViewSet(ViewSet, ResponseHandlerMixin):
                 owner=request.user,
                 id=scenario_id
             )
-        except Scenario.DoesNotExists:
+        except Scenario.DoesNotExist:
             return self.error_response(message=ResponseError.SCENARIO_NOT_FOUND.value)
         except Exception as ex:
             return self.error_response(message=ResponseError.UNKNOWN_ERROR.value)

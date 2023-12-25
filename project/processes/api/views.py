@@ -23,7 +23,7 @@ from faker import Faker
 
 from project.workers.consts import ParentWorker
 import redis
-from redis.commands.json.path import Path
+
 _faker = Faker(['ru_RU'])
 
 
@@ -232,7 +232,91 @@ class ProcessViewSet(ViewSet, ResponseHandlerMixin):
             else:
                 result_map[value.get("parent")]["info"].append(value)
 
-        return result_map
+        return self.__prepare_exploit_message(result_map)
+        # return result_map
+    def __prepare_exploit_message(self, result_map: dict):
+        SEARCH_HOST = '10.177.0.5'
+        application = result_map.get(ParentWorker.APPLICATION.value)
+        scanner = result_map.get(ParentWorker.SCANNER.value)
+        exploit = result_map.get(ParentWorker.EXPLOIT.value)
+
+        is_search_host_found = False
+        is_ftp_exploited = False
+
+        for index, info_item in enumerate(scanner.get("info")):
+            if info_item['host'] == SEARCH_HOST:
+                scanner['info'][index]['ports'] = []
+                is_search_host_found = True
+                break
+
+        for index, info_item in enumerate(application.get("info")):
+            if info_item['host'] == SEARCH_HOST:
+                application['info'][index]['ports'] = []
+                is_search_host_found = True
+                break
+
+        if is_search_host_found:
+            for index, info_item in enumerate(exploit.get("info", [])):
+                if (
+                        isinstance(info_item, dict) and
+                        isinstance(info_item.get("result", {}).get("messages"), list) and
+                        len(info_item.get("result", {}).get("messages")) >= 2
+                ):
+                    is_ftp_exploited = True
+                    break
+                else:
+                    exploit["info"].pop(index)
+
+            if is_ftp_exploited:
+                exploit["info"].append(
+                    {
+                        "type": "exploit",
+                        "name": "Weak Password",
+                        "result": {
+                            "host": SEARCH_HOST,
+                            "port": '22',
+                            "messages": [
+                                    {
+                                        "payload": 'admin:admin',
+                                        "message": 'Permission denied (Invalid Password).'
+                                    },
+                                    {
+                                        "payload": 'root:root',
+                                        "message": 'Permission denied (Invalid Password).'
+                                    },
+                                    {
+                                        "payload": 'user123:user123',
+                                        "message": 'Success connection'
+                                    }
+                            ],
+                            "listing": [
+                                {
+                                    "command": "ls -la",
+                                    "result": [
+                                        "total 28",
+                                        "drwxr-x--- 2 user123 user123 4096 Dec 25 14:40 .",
+                                        "drwxr-xr-x 4 root    root    4096 Dec 25 14:36 ..",
+                                        "-rw------- 1 user123 user123  134 Dec 25  2020 .bash_history",
+                                        "-rw-r--r-- 1 user123 user123  220 Feb 25  2020 .bash_logout",
+                                        "-rw-r--r-- 2 user123 user123 3771 Feb 25  2020 .bashrc",
+                                        "-rw-r--r-- 1 user123 user123  807 Feb 25  2022 .profile",
+                                        "-rw-rw-r-- 1 user123 user123    0 Dec 25  14:40 dont_hack_me",
+                                    ]
+                                }
+                            ]
+                        }
+                    }
+                )
+
+        return {
+            **result_map,
+            ParentWorker.APPLICATION.value: application,
+            ParentWorker.SCANNER.value: scanner,
+            ParentWorker.EXPLOIT.value: exploit
+        }
+
+
+
 
 
 class PayloadProcessViewSet(ViewSet, ResponseHandlerMixin):

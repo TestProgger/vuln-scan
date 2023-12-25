@@ -46,7 +46,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    #'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -113,8 +113,8 @@ USE_I18N = True
 
 USE_TZ = True
 
-STATIC_URL = env.str('DJANGO_STATIC_URL', default='static/')
-STATIC_ROOT = BASE_DIR / STATIC_URL
+STATIC_URL = 'django_static/'
+STATIC_ROOT = os.path.join(BASE_DIR, STATIC_URL)
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 

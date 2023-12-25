@@ -16,13 +16,14 @@ class NseScan(BaseWorker):
 
     def run(self):
         file_name = str(settings.BASE_DIR / f"{str(uuid4())}.xml")
+        print(f"NSE={self.serialized_data=}")
         try:
             proc = subprocess.run(
                 args=[
                     "nmap",
                     "-sV",
                     "-T4",
-                    "--min-parallelism", "1024",
+                    "--min-parallelism", "256",
                     "--script", self.serialized_data.get("script"),
                     self.serialized_data.get("target"),
                     "-oX", file_name
@@ -31,6 +32,7 @@ class NseScan(BaseWorker):
                 stdout=subprocess.PIPE
             )
         except Exception as ex:
+            print(f"NSE: {ex=}")
             raise
         else:
             if proc.returncode != 0:
@@ -51,6 +53,8 @@ class NseScan(BaseWorker):
 
             host_status = host_tag.find("status").get("state")
             address = host_tag.find("address").get("addr")
+            if address == settings.CURRENT_HOST_IP:
+                continue
             result_dict.update(
                 {
                     "host": address,
