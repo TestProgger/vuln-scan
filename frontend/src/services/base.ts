@@ -115,7 +115,7 @@ class BaseService {
             }
             console.log("@#@!#", axiosError)
             if(axiosError.response?.status === 400){
-                const errorEvent = new CustomEvent('error-response', { detail: { message: axiosError.response?.data?.status?.message} });
+                const errorEvent = new CustomEvent('error-response', { detail: { message: (axiosError.response?.data as {status: {message: string}})?.status?.message} });
                 document.dispatchEvent(errorEvent)
             }
 

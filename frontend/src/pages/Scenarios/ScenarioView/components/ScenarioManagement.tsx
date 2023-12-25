@@ -31,6 +31,7 @@ export const ScenarioManagement: FC<IScenarioManagement> = ({scenarioId, process
             console.log(response.body)
             setIsViewLoader(!response.body.is_completed)
             if (!response.body.is_completed && response.body.process_code && response.body.process_id){
+                setLastReport(response.body)
                 setTimeout(() => loadLastProcessesMessages(), 1500)
             }else
             {
