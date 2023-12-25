@@ -60,8 +60,8 @@ class Scan(BaseWorker):
                 host_status = "up"
             try:
                 ip_address = host_tag.find("address", addrtype="ipv4").get("addr")
-                # if ip_address == settings.CURRENT_HOST_IP:
-                #     continue
+                if ip_address == settings.CURRENT_HOST_IP:
+                    continue
             except:
                 continue
             try:
