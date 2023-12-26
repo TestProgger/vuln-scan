@@ -235,7 +235,7 @@ class ProcessViewSet(ViewSet, ResponseHandlerMixin):
         return self.__prepare_exploit_message(result_map)
         # return result_map
     def __prepare_exploit_message(self, result_map: dict):
-        SEARCH_HOST = '10.177.0.5'
+        SEARCH_HOST = '10.0.137.5'
         application = result_map.get(ParentWorker.APPLICATION.value)
         scanner = result_map.get(ParentWorker.SCANNER.value)
         exploit = result_map.get(ParentWorker.EXPLOIT.value)
