@@ -9,7 +9,7 @@ python manage.py runserver 0.0.0.0:10200
 Запуск фронта (Новая вкладка терминала)
 ```bash
 cd frontend
-nom run dev
+npm run dev
 ```
 
 Запуск планировщика (Новая вкладка терминала)
